@@ -1,9 +1,22 @@
 // Function to parse input and create array of boxes
 function parseBoxes(input) {
-    return input.trim().split('\n').map(line => {
-        const [name, width, height] = line.split(',').map((value, index) => index === 0 ? value.trim() : Number(value.trim()));
-        return { name, width, height };
-    });
+    return input.trim().split('\n')
+        .filter(line => line.trim() && !line.trim().startsWith('#'))
+        .map(line => {
+            // Replace escaped commas with a unique placeholder
+            const placeholder = '__COMMA__';
+            line = line.replace(/\\,/g, placeholder);
+
+            const [name, width, height] = line.split(',').map((value, index) => {
+                value = value.trim();
+                // Restore escaped commas
+                value = value.replace(new RegExp(placeholder, 'g'), ',');
+
+                return index === 0 ? value : Number(value);
+            });
+
+            return { name, width, height };
+        });
 }
 
 // Function to handle file upload
