@@ -28,7 +28,6 @@ function createCanvas(binWidth, binHeight) {
     const canvas = document.createElement('canvas');
     canvas.width = binWidth;
     canvas.height = binHeight;
-    canvas.style.border = '1px solid black';
     return canvas;
 }
 
@@ -129,8 +128,9 @@ function packBins() {
     }
 
     // Arrange bins in a grid with specified max columns
-    binsContainer.style.display = 'grid';
     binsContainer.style.gridTemplateColumns = `repeat(${Math.min(maxColumns, numberOfBins)}, auto)`;
+    const gap = window.getComputedStyle(binsContainer).getPropertyValue('gap').slice(0,-2);
+    binsContainer.style.maxWidth = `${maxColumns*binWidth+(maxColumns-1)*gap + 8*2}px`; //the 8*2 is for 4 canvases with 2 pixels of border on left and right
 }
 
 // Function to toggle error details visibility

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body onload="packBins()">
-    <h1>Shelf Packer</h1>
+    <h1>Shelf Packer!</h1>
     <div>
         <label for="bin-width">Bin Width:</label>
         <input type="number" id="bin-width" value="333">
@@ -30,7 +30,7 @@
     <button onclick="handleFileUpload()">Upload File</button>
     <button onclick="packBins()">Pack Bins</button>
     <div id="error-message" style="display: none; color: red;">
-        <p id="error-summary"><strong>Error:</strong> <button onclick="toggleErrorDetails()">Show items that were not packed</button></p>
+        <p id="error-summary"></p>
         <ul id="error-details" style="display: none;"></ul>
     </div>
     <div id="bins-container"></div>
