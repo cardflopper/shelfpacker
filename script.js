@@ -229,7 +229,7 @@ function drawBox(ctx, x, y, width, height, shade) {
 
     // Draw outline (adjusted to stay within the dimensions of the box)
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
     ctx.strokeRect(x + ctx.lineWidth / 2, y + ctx.lineWidth / 2, width - ctx.lineWidth, height - ctx.lineWidth);
 
     ctx.restore();

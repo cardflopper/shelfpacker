@@ -1,6 +1,5 @@
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
 }
 
 canvas {
@@ -11,7 +10,7 @@ canvas {
 #bins-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: left;
     gap: 10px;
     margin-top: 20px;
 }
