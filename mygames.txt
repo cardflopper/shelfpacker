@@ -1,65 +1,106 @@
-Downforce,295,42
-Africana,295,73
-Cleopatra and the Society of Architects,295,73
-Ticket to Ride Europe,295,73
-Five Tribes,295,73
-Port Nigra,295,88
+Downforce,295,45
+Africana,295,75
+Cleopatra and the Society of Architects,295,75
+Ticket to Ride Europe,295,75
+Five Tribes,295,75
+Port Nigra,295,90
 Magic Dominaria,295,70
 Bring Out Yer Dead,295,80
-Camel Up,295,73
-Zhan Guo,295,73
-Subdivision,295, 73
-A Study In Emerald,295, 73
-Mombasa,295,73
+Camel Up,295,75
+Zhan Guo,295,75
+Subdivision,295, 75
+A Study In Emerald,295, 75
+Mombasa,295,75
 Adventureland,295,70
 Oceanos,295,75
-New York 1901,295,73
-Inkognito,295,73
-Rondo,295,73
-Aquileia,295,73
-Manila,295,73
-A Castle for All Seasons,295,73
-Mangrovia,295,73
-Aquarium,154,37
-Blueprints,154,37
-More Cash n' More Guns,140,56
-Team Spirit,140,56
+New York 1901,295,75
+Inkognito,295,75
+Rondo,295,75
+Aquileia,295,75
+Manila,295,75
+A Castle for All Seasons,295,75
+Mangrovia,295,75
+Aquarium,155,40
+Blueprints,155,40
+More Cash n' More Guns,140,55
+Team Spirit,140,55
 Colossal Arena (2004 ed),200,40
 Fangs,130,40
 The Crew: The Quest for Planet Nine,130,40
-CoB: Card Game,112, 36
-Cob: Dice Game,112, 36
-The Golden City,295,73
-The Secret of Monte Cristo,295,73
-Trolhalla,295, 73
-North Wind,295,73
+CoB: Card Game,115, 35
+Cob: Dice Game,115, 35
+The Golden City,295,75
+The Secret of Monte Cristo,295,75
+Trolhalla,295, 75
+North Wind,295,75
 Atlas: Enchanted Lands,130,40
 Fungi,130,40
-Gravwell (2nd ed),242, 78
-Discoveries: The Journals of Lewis and Clark,276, 57
-Transamerica,270, 68
-Battle Sheep,265,63
-Cash n' Guns (2nd ed),295, 58
-Sanssouci,295, 73
+Gravwell (2nd ed),245, 80
+Discoveries: The Journals of Lewis and Clark,275, 60
+Transamerica,270, 70
+Battle Sheep,265,65
+Cash n' Guns (2nd ed),295, 60
+Sanssouci,295, 75
 Meadow,295, 75
-Asara,295, 73
-Orongo,295, 73
-Modern Art (cmon ed),295,52
-Kingdoms,255,52
+Asara,295, 75
+Orongo,295, 75
+Modern Art (cmon ed),295,55
+Kingdoms,255,55
 Red November,255,50
-The LotR (FF ed),255, 52
-Gateway Uprising,255, 52
+The LotR (FF ed),255, 55
+Gateway Uprising,255, 55
 King of New York,255, 70
-Through the Desert (1st ed),255, 52
+Through the Desert (1st ed),255, 55
 Shinobi Wat-Aah!,255,70
-Infiltration,255, 52
-Rune Age,255, 52
-Bob Ross: The Art of Chill,265,52
+Infiltration,255, 55
+Rune Age,255, 55
+Bob Ross: The Art of Chill,265,55
 Key to the Kingdom,295, 70
-Around the World in 80 Days,295, 73
-Steam Time,295, 73
-Mercado,295, 73
-Biblios,138, 42
-Pyramids,138,42
-Fox in Forest,114,32
-Fox in Forest Duet,114,32
+Around the World in 80 Days,295, 75
+Steam Time,295, 75
+Mercado,295, 75
+Biblios,140, 45
+Pyramids,140,45
+Fox in Forest,115,35
+Fox in Forest Duet,115,35
+#========Added recently
+Ankh'or,130,40
+7 Wonders Duel,205,55
+Boomtown,200,55
+Point Salad,145,50
+Laterns: The Harvest Festival,185,55
+Tiny Epic Galaxies Blast Off!,120,40
+Targi,205,50
+Spynet,115,35
+Mystic Market,160,55
+Under Falling Skies,185,60
+Crypt,80,35
+Ciub,190,70
+Nightfall,200,85
+Nightfall: The Coldest War,200,85
+Nightfall: Martial Law,200,85
+Starfighter,190,60
+Citadels (old),105,40
+Colossal Arena (new),105,40
+Jaipur (1st ed),105,40
+TSCHAK!,105,40
+Kill the Overlord,110,45
+Secrets,105,40
+Air\,Land\, and Sea\, Critters at War,115,40
+Seven7s,110,35
+Red 7,110,25
+Pocket Mars,100,30
+BANG! Dice: Old Saloon,90,35
+Fairy Tile,205,60
+Pickomino,205,55
+Aton, 195,75
+Arena: Roma II, 195,75
+Blokus Duo,210,45
+Jambo,205,35
+Morels,205,35
+Monster Expedition,205,55
+Lost Cities (1st ed),200,35
+Watergate,205,50
+Prowler's Passage,230,55
+VivaJava Dice,225,55
+Piece o' Cake,165,60
