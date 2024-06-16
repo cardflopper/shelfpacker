@@ -270,10 +270,10 @@ function drawBox(ctx, x, y, width, height, shade) {
 window.onload = function() {
     // Prepopulate the box input with default values
     document.getElementById('boxes').value =
-    `test1,200,100
+    /*test1,200,100
 test2,150,200
 test3,150,100`;
-    /*
+    */
     `Downforce,295,42
 Africana,295,73
 Cleopatra and the Society of Architects,295,73
@@ -379,7 +379,7 @@ Lost Cities (1st ed),200,33
 Watergate,202,48
 Prowler's Passage,230,52
 VivaJava Dice,223,52
-Piece o' Cake,166,59`;*/
+Piece o' Cake,166,59`;
 
     // Automatically pack bins on page load
     packBins();
