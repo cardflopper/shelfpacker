@@ -45,6 +45,7 @@ function createCanvas(binWidth, binHeight) {
 }
 
 // Function to pack boxes into multiple bins
+
 function packBins() {
     const binWidth = parseInt(document.getElementById('bin-width').value);
     const binHeight = parseInt(document.getElementById('bin-height').value);
@@ -59,7 +60,7 @@ function packBins() {
         }
         return b.height - a.height;
     });
-
+    //console.log(boxes);
     const binsContainer = document.getElementById('bins-container');
     binsContainer.innerHTML = ''; // Clear existing bins
 
@@ -97,13 +98,22 @@ function packBins() {
             const ctx = bins[binIndex];
             const positionArray = positions[binIndex];
 
-            // Try placing the box horizontally
-            placed = tryPlaceBox(ctx, positionArray, box.name, box.width, box.height, binWidth, binHeight, false, blueShades[positionArray.length % blueShades.length]);
-
-            // If failed, try placing vertically
-            if (!placed) {
+            if(document.getElementById("prioritizeVertical").checked){
+                //Try Vertical first
                 placed = tryPlaceBox(ctx, positionArray, box.name, box.height, box.width, binWidth, binHeight, true, blueShades[positionArray.length % blueShades.length]);
+                //If failed, try placing vertically
+                if (!placed) {
+                    placed = tryPlaceBox(ctx, positionArray, box.name, box.width, box.height, binWidth, binHeight, false, blueShades[positionArray.length % blueShades.length]);
+                }
             }
+            else{
+                
+                placed = tryPlaceBox(ctx, positionArray, box.name, box.width, box.height, binWidth, binHeight, false, blueShades[positionArray.length % blueShades.length]);
+                if (!placed) {
+                    placed = tryPlaceBox(ctx, positionArray, box.name, box.height, box.width, binWidth, binHeight, true, blueShades[positionArray.length % blueShades.length]);
+                }
+            }
+
         }
 
         if (!placed) {
@@ -144,7 +154,11 @@ function packBins() {
     binsContainer.style.gridTemplateColumns = `repeat(${Math.min(maxColumns, numberOfBins)}, auto)`;
     const gap = window.getComputedStyle(binsContainer).getPropertyValue('gap').slice(0,-2);
     binsContainer.style.maxWidth = `${maxColumns*binWidth+(maxColumns-1)*gap + 8*2}px`; //the 8*2 is for 4 canvases with 2 pixels of border on left and right
+
+
 }
+
+
 
 // Function to toggle error details visibility
 function toggleErrorDetails() {
@@ -162,10 +176,13 @@ function toggleErrorDetails() {
 
 
 // Function to attempt placing a box in the specified orientation
+
 function tryPlaceBox(ctx, positionArray, name, width, height, binWidth, binHeight, vertical, shade) {
+    //for (let y = binHeight - height; y >= 0; y--) {
     for (let y = binHeight - height; y >= 0; y--) {
         for (let x = 0; x <= binWidth - width; x++) {
             if (canPlaceBox(x, y, width, height, positionArray)) {
+                
                 positionArray.push({ x, y, width, height });
                 drawBox(ctx, x, y, width, height, shade); // Draw box with shade
                 drawText(ctx, name, x, y, width, height, vertical); // Pass name to drawText
@@ -252,6 +269,10 @@ function drawBox(ctx, x, y, width, height, shade) {
 window.onload = function() {
     // Prepopulate the box input with default values
     document.getElementById('boxes').value =
+    `test1,200,100
+test2,150,200
+test3,150,100`;
+    /*
     `Downforce,295,42
 Africana,295,73
 Cleopatra and the Society of Architects,295,73
@@ -316,8 +337,48 @@ Mercado,295, 73
 Biblios,138, 42
 Pyramids,138,42
 Fox in Forest,114,32
-Fox in Forest Duet,114,32`
-;
+Fox in Forest Duet,114,32
+#========Added recently
+Ankh'or,130,40
+7 Wonders Duel,205,52
+Boomtown,200,52
+Point Salad,145,48
+Laterns: The Harvest Festival,185,52
+Tiny Epic Galaxies Blast Off!,120,40
+Targi,204,48
+Spynet,116,34
+Mystic Market,160,54
+Under Falling Skies,185,58
+Crypt,80,36
+Ciub,190,68
+Nightfall,200,82
+Nightfall: The Coldest War,200,82
+Nightfall: Martial Law,200,82
+Starfighter,190,60
+Citadels (old),104,37
+Colossal Arena (new),104,37
+Jaipur (1st ed),104,37
+TSCHAK!,104,37
+Kill the Overlord,110,42
+Secrets,104,37
+Air\\, Land\\, and\\, Sea Critters at War,114,40
+Seven7s,110,33
+Red 7,108,22
+Pocket Mars,100,30
+BANG! Dice: Old Saloon,90,33
+Fairy Tile,206,60
+Pickomino,202,52
+Aton, 192,74
+Arena: Roma II, 192,74
+Blokus Duo,207,43
+Jambo,202,32
+Morels,204,32
+Monster Expedition,202,52
+Lost Cities (1st ed),200,33
+Watergate,202,48
+Prowler's Passage,230,52
+VivaJava Dice,223,52
+Piece o' Cake,166,59`;*/
 
     // Automatically pack bins on page load
     packBins();
