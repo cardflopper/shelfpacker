@@ -46,6 +46,38 @@ function createCanvas(binWidth, binHeight) {
 
 // Function to pack boxes into multiple bins
 
+function measureSupport(box, positions, binHeight) {
+    let supportedWidth = 0;
+    const boxBottom = box.y + box.height;
+
+    // Check if the box is supported by the bin container bottom
+    if (boxBottom >= binHeight) {
+        supportedWidth = box.width;
+    } else {
+        // Check support from other boxes
+        positions.forEach(pos => {
+            const posTop = pos.y;
+            const posBottom = pos.y + pos.height;
+
+            // Check if there is overlap in width and pos is directly beneath the box
+            if (posTop === boxBottom) {
+                const overlapStart = Math.max(box.x, pos.x);
+                const overlapEnd = Math.min(box.x + box.width, pos.x + pos.width);
+                const overlapWidth = Math.max(0, overlapEnd - overlapStart);
+                supportedWidth += overlapWidth;
+            }
+        });
+
+        // Ensure we do not exceed the box's width
+        supportedWidth = Math.min(supportedWidth, box.width);
+    }
+
+    // Calculate percentage of support
+    const supportPercentage = (supportedWidth / box.width) * 100;
+    return supportPercentage;
+}
+
+
 function packBins() {
     const binWidth = parseInt(document.getElementById('bin-width').value);
     const binHeight = parseInt(document.getElementById('bin-height').value);
@@ -72,7 +104,7 @@ function packBins() {
     }
 
     const positions = Array(numberOfBins).fill().map(() => []); // Store positions of placed boxes for each bin
-
+    console.log(positions);
     // Define adjusted shades of blue for contrast and readability with black text
     const blueShades = [
         "#B3D9FF", // Light Blue
@@ -179,10 +211,10 @@ function toggleErrorDetails() {
 
 function tryPlaceBox(ctx, positionArray, name, width, height, binWidth, binHeight, vertical, shade) {
     //for (let y = binHeight - height; y >= 0; y--) {
+    let supportThreshold = document.getElementById("support-threshold").value;
     for (let y = binHeight - height; y >= 0; y--) {
         for (let x = 0; x <= binWidth - width; x++) {
-            if (canPlaceBox(x, y, width, height, positionArray)) {
-                
+            if (canPlaceBox(x, y, width, height, positionArray) && (measureSupport({x,y,width,height},positionArray,binHeight) > supportThreshold) ) {
                 positionArray.push({ x, y, width, height });
                 drawBox(ctx, x, y, width, height, shade); // Draw box with shade
                 drawText(ctx, name, x, y, width, height, vertical); // Pass name to drawText
@@ -192,6 +224,7 @@ function tryPlaceBox(ctx, positionArray, name, width, height, binWidth, binHeigh
     }
     return false;
 }
+
 
 
 // Function to check if the box can be placed at the given position
@@ -269,118 +302,7 @@ function drawBox(ctx, x, y, width, height, shade) {
 // Initial packBins() call when the page loads
 window.onload = function() {
     // Prepopulate the box input with default values
-    document.getElementById('boxes').value =
-    /*test1,200,100
-test2,150,200
-test3,150,100`;
-    */
-    `Downforce,295,42
-Africana,295,73
-Cleopatra and the Society of Architects,295,73
-Ticket to Ride Europe,295,73
-Five Tribes,295,73
-Port Nigra,295,88
-Magic Dominaria,295,70
-Bring Out Yer Dead,295,80
-Camel Up,295,73
-Zhan Guo,295,73
-Subdivision,295, 73
-A Study In Emerald,295, 73
-Mombasa,295,73
-Adventureland,295,70
-Oceanos,295,75
-New York 1901,295,73
-Inkognito,295,73
-Rondo,295,73
-Aquileia,295,73
-Manila,295,73
-A Castle for All Seasons,295,73
-Mangrovia,295,73
-Aquarium,154,37
-Blueprints,154,37
-More Cash n' More Guns,140,56
-Team Spirit,140,56
-Colossal Arena (2004 ed),200,40
-Fangs,130,40
-The Crew: The Quest for Planet Nine,130,40
-CoB: Card Game,112, 36
-Cob: Dice Game,112, 36
-The Golden City,295,73
-The Secret of Monte Cristo,295,73
-Trolhalla,295, 73
-North Wind,295,73
-Atlas: Enchanted Lands,130,40
-Fungi,130,40
-Gravwell (2nd ed),242, 78
-Discoveries: The Journals of Lewis and Clark,276, 57
-Transamerica,270, 68
-Battle Sheep,265,63
-Cash n' Guns (2nd ed),295, 58
-Sanssouci,295, 73
-Meadow,295, 75
-Asara,295, 73
-Orongo,295, 73
-Modern Art (cmon ed),295,52
-Kingdoms,255,52
-Red November,255,50
-The LotR (FF ed),255, 52
-Gateway Uprising,255, 52
-King of New York,255, 70
-Through the Desert (1st ed),255, 52
-Shinobi Wat-Aah!,255,70
-Infiltration,255, 52
-Rune Age,255, 52
-Bob Ross: The Art of Chill,265,52
-Key to the Kingdom,295, 70
-Around the World in 80 Days,295, 73
-Steam Time,295, 73
-Mercado,295, 73
-Biblios,138, 42
-Pyramids,138,42
-Fox in Forest,114,32
-Fox in Forest Duet,114,32
-#========Added recently
-Ankh'or,130,40
-7 Wonders Duel,205,52
-Boomtown,200,52
-Point Salad,145,48
-Laterns: The Harvest Festival,185,52
-Tiny Epic Galaxies Blast Off!,120,40
-Targi,204,48
-Spynet,116,34
-Mystic Market,160,54
-Under Falling Skies,185,58
-Crypt,80,36
-Ciub,190,68
-Nightfall,200,82
-Nightfall: The Coldest War,200,82
-Nightfall: Martial Law,200,82
-Starfighter,190,60
-Citadels (old),104,37
-Colossal Arena (new),104,37
-Jaipur (1st ed),104,37
-TSCHAK!,104,37
-Kill the Overlord,110,42
-Secrets,104,37
-Air\\, Land\\, and\\, Sea Critters at War,114,40
-Seven7s,110,33
-Red 7,108,22
-Pocket Mars,100,30
-BANG! Dice: Old Saloon,90,33
-Fairy Tile,206,60
-Pickomino,202,52
-Aton, 192,74
-Arena: Roma II, 192,74
-Blokus Duo,207,43
-Jambo,202,32
-Morels,204,32
-Monster Expedition,202,52
-Lost Cities (1st ed),200,33
-Watergate,202,48
-Prowler's Passage,230,52
-VivaJava Dice,223,52
-Piece o' Cake,166,59`;
-
+    document.getElementById('boxes').value = sampleBoxes;
     // Automatically pack bins on page load
     packBins();
 };

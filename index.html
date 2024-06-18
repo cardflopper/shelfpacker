@@ -23,6 +23,10 @@
         <input type="number" id="max-columns" value="4">
     </div>
     <div>
+        <label for="support-threshold">Min % box support:</label>
+        <input type="number" id="support-threshold" value="85"> (controls box "hang")
+    </div>
+    <div>
         <label for="boxes">Boxes (name,width,height per line) or Upload File:</label><br>
         <textarea id="boxes" rows="10" cols="30"></textarea>
         <input type="file" id="file-input" accept=".txt">
@@ -38,6 +42,8 @@
         <ul id="error-details" style="display: none;"></ul>
     </div>
     <div id="bins-container"></div>
+    <script src="boxes.js"></script>
     <script src="script.js"></script>
+
 </body>
 </html>
