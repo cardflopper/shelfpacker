@@ -24,7 +24,8 @@
     </div>
     <div>
         <label for="support-threshold">Min % box support:</label>
-        <input type="number" id="support-threshold" value="85"> (controls box "hang")
+        <input type="number" id="support-threshold" value="85">
+        <a href="javascript:void(0);" title="control how much of the base of the box must be supported to allow it to be packed">[?]</a>
     </div>
     <div>
         <label for="boxes">Boxes (name,width,height per line) or Upload File:</label><br>
@@ -33,10 +34,18 @@
     </div>
     <button onclick="handleFileUpload()">Upload File</button>
     <button onclick="packBins()">Pack Bins</button>
+    <button id="download-button" onclick="downloadArrangement()">Download Arrangement</button>
     <div>
-        <label for="prioritizeVertical">Prioritize Vertical?</label>
+        <label for="prioritizeVertical">Prioritize Vertical</label>
         <input id="prioritizeVertical" type="checkbox"/>
+        <a href="javascript:void(0);" title="try packing veritially first, then horizontal">[?]</a>
     </div>
+    <div>
+        <label for="showPackingOrder">Show Packing Order</label>
+        <input id="showPackingOrder" type="checkbox"/>
+        <a href="javascript:void(0);" title="displays the order in which the box was packed">[?]</a>
+    </div>
+    
     <div id="error-message" style="display: none; color: red;">
         <p id="error-summary"></p>
         <ul id="error-details" style="display: none;"></ul>

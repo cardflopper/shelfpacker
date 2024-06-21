@@ -8,10 +8,6 @@ Port Nigra,295,88
 Magic Dominaria,295,70
 Bring Out Yer Dead,295,80
 Camel Up,295,73
-Zhan Guo,295,73
-Subdivision,295, 73
-A Study In Emerald,295, 73
-Mombasa,295,73
 Adventureland,295,70
 Oceanos,295,75
 New York 1901,295,73
@@ -36,33 +32,37 @@ Trolhalla,295, 73
 North Wind,295,73
 Atlas: Enchanted Lands,130,40
 Fungi,130,40
-Gravwell (2nd ed),242, 78
-Discoveries: The Journals of Lewis and Clark,276, 57
-Transamerica,270, 68
-Battle Sheep,265,63
 Cash n' Guns (2nd ed),295, 58
 Sanssouci,295, 73
 Meadow,295, 75
 Asara,295, 73
 Orongo,295, 73
-Modern Art (cmon ed),295,52
-Kingdoms,255,52
-Red November,255,50
-The LotR (FF ed),255, 52
-Gateway Uprising,255, 52
-King of New York,255, 70
 Through the Desert (1st ed),255, 52
 Shinobi Wat-Aah!,255,70
 Infiltration,255, 52
 Rune Age,255, 52
 Bob Ross: The Art of Chill,265,52
+#========Added recently
+Battle Sheep,265,62
+Discoveries: The Journals of Lewis and Clark,276, 57
+Transamerica,270, 68
+Gravwell (2nd ed),242, 78
+King of New York,255, 70
+Modern Art (cmon ed),255,52
+Kingdoms,255,52
+Red November,255,50
+The LotR (FF ed),255, 52
+Gateway Uprising,255, 52
+Zhan Guo,297,73
+Subdivision,297, 73
+A Study In Emerald,297, 73
+Mombasa,297,73
 Key to the Kingdom,295, 70
-Around the World in 80 Days,295, 73
-Steam Time,295, 73
-Mercado,295, 73
+Steam Time,297, 73
+Around the World in 80 Days,297, 73
+Mercado,297, 73
 Biblios,138, 42
 Pyramids,138,42
-#========Added recently
 Fox in Forest,114,32
 Fox in Forest Duet,114,32
 Ankh'or,130,40
@@ -87,7 +87,7 @@ Jaipur (1st ed),104,37
 TSCHAK!,104,37
 Kill the Overlord,110,42
 Secrets,104,37
-Air\\, Land\\, and\\, Sea Critters at War,114,40
+Air\\, Land\\, and\\, Sea: Critters at War,114,40
 Seven7s,110,33
 Red 7,108,22
 Pocket Mars,100,30
