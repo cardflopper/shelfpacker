@@ -3,11 +3,12 @@ body {
 }
 
 canvas {
-    border: 2px solid gray;
-    margin-top: 20px;
+    border:2px solid gray;    
+    margin-top: 10px;
 }
 
-#bins-container {
-    gap:5px;
+.bin-section {
+    gap:10px; /*see arrangeGrid function in script*/
     display :grid;
+    box-sizing:border-box;
 }

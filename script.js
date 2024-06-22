@@ -1,31 +1,19 @@
 let globalPackingPositions = [];
+let unpackedGames = [];
 
-// Function to parse input and create array of boxes
-function parseBoxes(input) {
-    return input.trim().split('\n')
-        .filter(line => line.trim() && !line.trim().startsWith('#'))
-        .map(line => {
-            // Replace escaped commas with a unique placeholder
-            const placeholder = '__COMMA__';
-            line = line.replace(/\\,/g, placeholder);
-
-            const [name, width, height] = line.split(',').map((value, index) => {
-                value = value.trim();
-                // Restore escaped commas
-                value = value.replace(new RegExp(placeholder, 'g'), ',');
-
-                return index === 0 ? value : Number(value);
-            });
-
-            return { name, width, height };
-        });
+// Utility function to create a canvas element
+function createCanvas(binWidth, binHeight) {
+    const canvas = document.createElement('canvas');
+    canvas.width = binWidth;
+    canvas.height = binHeight;
+    return canvas;
 }
 
 // Function to handle file upload
 function handleFileUpload() {
     const fileInput = document.getElementById('file-input');
     const file = fileInput.files[0];
-    
+
     if (file) {
         const reader = new FileReader();
         reader.onload = function(event) {
@@ -38,197 +26,37 @@ function handleFileUpload() {
     }
 }
 
-// Function to create a canvas element with specified dimensions
-function createCanvas(binWidth, binHeight) {
-    const canvas = document.createElement('canvas');
-    canvas.width = binWidth;
-    canvas.height = binHeight;
-    return canvas;
-}
 
-// Function to pack boxes into multiple bins
+// Function to parse bin sizes from textarea
+function parseBinSizes(input) {
+    const binSizesText = input.trim();
+    const lines = binSizesText.split('\n');
 
-function measureSupport(box, positions, binHeight) {
-    let supportedWidth = 0;
-    const boxBottom = box.y + box.height;
-
-    // Check if the box is supported by the bin container bottom
-    if (boxBottom >= binHeight) {
-        supportedWidth = box.width;
-    } else {
-        // Check support from other boxes
-        positions.forEach(pos => {
-            const posTop = pos.y;
-            const posBottom = pos.y + pos.height;
-
-            // Check if there is overlap in width and pos is directly beneath the box
-            if (posTop === boxBottom) {
-                const overlapStart = Math.max(box.x, pos.x);
-                const overlapEnd = Math.min(box.x + box.width, pos.x + pos.width);
-                const overlapWidth = Math.max(0, overlapEnd - overlapStart);
-                supportedWidth += overlapWidth;
-            }
-        });
-
-        // Ensure we do not exceed the box's width
-        supportedWidth = Math.min(supportedWidth, box.width);
-    }
-
-    // Calculate percentage of support
-    const supportPercentage = (supportedWidth / box.width) * 100;
-    return supportPercentage;
-}
-
-
-function packBins() {
-    const binWidth = parseInt(document.getElementById('bin-width').value);
-    const binHeight = parseInt(document.getElementById('bin-height').value);
-    const numberOfBins = parseInt(document.getElementById('number-of-bins').value);
-    const maxColumns = parseInt(document.getElementById('max-columns').value);
-    const boxes = parseBoxes(document.getElementById('boxes').value);
-
-    // Sort boxes by width, then by height in descending order
-    // note: doing a basic width sort gives good results *shrug*
-    boxes.sort((a, b) => {
-        //if (b.width !== a.width) {
-            return b.width - a.width;
-        //}
-       // return b.height - a.height;
+    const binSizes = lines.map(line => {
+        const [width, height, numberOfBins, columns] = line.split(',').map(item => parseInt(item.trim()));
+        return { width, height, numberOfBins, columns };
     });
+    return binSizes;
+}
 
-    //console.log(boxes);
-    const binsContainer = document.getElementById('bins-container');
-    binsContainer.innerHTML = ''; // Clear existing bins
-    const bins = [];
-    
-    for (let i = 0; i < numberOfBins; i++) {
-        const canvas = createCanvas(binWidth, binHeight);
-        binsContainer.appendChild(canvas);
-        bins.push(canvas.getContext('2d'));
-    }
+// Function to parse input and create an array of boxes
+function parseBoxes(input) {
+    return input.trim().split('\n')
+        .filter(line => line.trim() && !line.trim().startsWith('#'))
+        .map(line => {
+            const placeholder = '__COMMA__';
+            line = line.replace(/\\,/g, placeholder);
 
-    const positions = Array(numberOfBins).fill().map(() => []); // Store positions of placed boxes for each bin
+            const [name, width, height] = line.split(',').map((value, index) => {
+                value = value.trim();
+                value = value.replace(new RegExp(placeholder, 'g'), ',');
 
+                return index === 0 ? value : Number(value);
+            });
 
-    // Define adjusted shades of blue for contrast and readability with black text
-    const blueShades = [
-        "#B3D9FF", // Light Blue
-        "#A3C7FF", // Sky Blue
-        "#93B4FF", // Pastel Blue
-        "#82A2FF", // Baby Blue
-        "#7290FF", // Powder Blue
-        "#618DFF", // Cornflower Blue
-        "#508BFF", // Cerulean Blue
-        "#4682B4", // Steel Blue
-        "#3C7AFF", // Light Slate Blue
-        "#326EFF", // Slate Blue
-        "#295EFF", // Dark Slate Blue
-        "#1A4E8D"  // Midnight Blue
-    ];
-
-    const errorMessages = []; // Array to store error messages
-
-    boxes.forEach((box,i) => {
-        let placed = false;
-        
-        boxName = (showPackingOrder.checked)? `${i} ${box.name}` : box.name
-
-        for (let binIndex = 0; binIndex < bins.length && !placed; binIndex++) {
-            const ctx = bins[binIndex];
-            const positionArray = positions[binIndex];
-
-            if(document.getElementById("prioritizeVertical").checked){
-                //Try Vertical first
-                placed = tryPlaceBox(ctx, positionArray,boxName, box.height, box.width, binWidth, binHeight, true, blueShades[positionArray.length % blueShades.length]);
-                //If failed, try placing vertically
-                if (!placed) {
-                    placed = tryPlaceBox(ctx, positionArray, boxName, box.width, box.height, binWidth, binHeight, false, blueShades[positionArray.length % blueShades.length]);
-                }
-            }
-            else{
-                
-                placed = tryPlaceBox(ctx, positionArray, boxName, box.width, box.height, binWidth, binHeight, false, blueShades[positionArray.length % blueShades.length]);
-                if (!placed) {
-                    placed = tryPlaceBox(ctx, positionArray, boxName, box.height, box.width, binWidth, binHeight, true, blueShades[positionArray.length % blueShades.length]);
-                }
-            }
-        }
-
-        if (!placed) {
-            errorMessages.push(box.name);
-        }
-    });
-
-    // If there are error messages, display them in the HTML
-    if (errorMessages.length > 0) {
-        const errorSummaryElement = document.getElementById('error-summary');
-        const errorDetailsElement = document.getElementById('error-details');
-
-        // Display the summary message
-        errorSummaryElement.style.display = 'block';
-        errorSummaryElement.innerHTML = `<strong>Error:</strong> <button onclick="toggleErrorDetails()">Show items that were not packed</button>`;
-
-        // Clear previous error details
-        errorDetailsElement.innerHTML = '';
-
-        // Add detailed error messages
-        errorMessages.forEach(msg => {
-            const li = document.createElement('li');
-            li.textContent = msg;
-            errorDetailsElement.appendChild(li);
+            return { name, width, height };
         });
-
-        // Display the error message container
-        document.getElementById('error-message').style.display = 'block';
-    } else {
-        // Clear any existing error messages if there are none
-        document.getElementById('error-summary').innerHTML = '';
-        document.getElementById('error-summary').style.display = 'none';
-        document.getElementById('error-details').innerHTML = '';
-        document.getElementById('error-message').style.display = 'none';
-    }
-
-    // Arrange bins in a grid with specified max columns
-    binsContainer.style.gridTemplateColumns = `repeat(${Math.min(maxColumns, numberOfBins)}, auto)`;
-    const gap = window.getComputedStyle(binsContainer).getPropertyValue('gap').slice(0,-2);
-    binsContainer.style.maxWidth = `${maxColumns*binWidth+(maxColumns-1)*gap + 8*2}px`; //the 8*2 is for 4 canvases with 2 pixels of border on left and right
-    globalPackingPositions = positions; // Store positions in global variable
-    unpackedGames = errorMessages; // Store unpacked games
 }
-
-
-// Function to toggle error details visibility
-function toggleErrorDetails() {
-    const errorDetailsElement = document.getElementById('error-details');
-    const buttonText = document.querySelector('#error-summary button');
-
-    if (errorDetailsElement.style.display === 'none' || errorDetailsElement.style.display === '') {
-        errorDetailsElement.style.display = 'block';
-        buttonText.textContent = 'Hide details';
-    } else {
-        errorDetailsElement.style.display = 'none';
-        buttonText.textContent = 'Show items that were not packed';
-    }
-}
-function tryPlaceBox(ctx, positionArray, name, width, height, binWidth, binHeight, vertical, shade) {
-    let supportThreshold = document.getElementById("support-threshold").value;
-    for (let y = binHeight - height; y >= 0; y--) {
-        for (let x = 0; x <= binWidth - width; x++) {
-            if (canPlaceBox(x, y, width, height, positionArray) && (measureSupport({ x, y, width, height }, positionArray, binHeight) > supportThreshold)) {
-                positionArray.push({ x, y, width, height, name }); // Include name in positionArray
-                if (ctx) {
-                    drawBox(ctx, x, y, width, height, shade);
-                    drawText(ctx, name, x, y, width, height, vertical);
-                }
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-
-
 
 // Function to check if the box can be placed at the given position
 function canPlaceBox(x, y, width, height, positions) {
@@ -240,61 +68,39 @@ function canPlaceBox(x, y, width, height, positions) {
     );
 }
 
-// Function to draw text inside the box with trimming if necessary, considering orientation
-function drawText(ctx, text, x, y, width, height, vertical) {
-    ctx.save();
-    ctx.translate(x, y);
-    
-    if (vertical) {
-        ctx.translate(width / 2, height / 2); // Move origin to center of the box
-        ctx.rotate(-Math.PI / 2); // Rotate text
-    }
-    
-    ctx.font = "12px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    
-    // Measure the width of the text
-    const textWidth = ctx.measureText(text).width;
-    
-    // Adjust the text if it exceeds the box dimensions
-    if (vertical) {
-        const trimmedText = trimTextToFit(ctx, text, height); // Trim text to fit the box height
-        const textX = 0; // Center horizontally for vertical boxes
-        const textY = 0; // Center vertically for vertical boxes
-        ctx.fillText(trimmedText, textX, textY); // Draw trimmed text
+// Function to measure support for the box
+function measureSupport(box, positions, binHeight) {
+    let supportedWidth = 0;
+    const boxBottom = box.y + box.height;
+
+    if (boxBottom >= binHeight) {
+        supportedWidth = box.width;
     } else {
-        const trimmedText = trimTextToFit(ctx, text, width); // Trim text to fit the box width
-        const textX = width / 2; // Center horizontally for horizontal boxes
-        const textY = height / 2; // Center vertically for horizontal boxes
-        ctx.fillText(trimmedText, textX, textY); // Draw trimmed text
-    }
-    
-    ctx.restore();
-}
+        positions.forEach(pos => {
+            const posTop = pos.y;
+            const posBottom = pos.y + pos.height;
 
-// Function to trim the text to fit within the specified dimension (width or height) based on orientation
-function trimTextToFit(ctx, text, maxDimension) {
-    let trimmedText = text;
-    let textWidth = ctx.measureText(trimmedText).width;
+            if (posTop === boxBottom) {
+                const overlapStart = Math.max(box.x, pos.x);
+                const overlapEnd = Math.min(box.x + box.width, pos.x + pos.width);
+                const overlapWidth = Math.max(0, overlapEnd - overlapStart);
+                supportedWidth += overlapWidth;
+            }
+        });
 
-    while (textWidth > maxDimension && trimmedText.length > 0) {
-        trimmedText = trimmedText.slice(0, -1); // Remove one character from the end
-        textWidth = ctx.measureText(trimmedText).width; // Measure width without ellipsis
+        supportedWidth = Math.min(supportedWidth, box.width);
     }
 
-    return trimmedText;
+    const supportPercentage = (supportedWidth / box.width) * 100;
+    return supportPercentage;
 }
 
 // Function to draw the box with a gradient fill and outline
 function drawBox(ctx, x, y, width, height, shade) {
     ctx.save();
-
-    // Draw filled rectangle with shade of blue
     ctx.fillStyle = shade;
     ctx.fillRect(x, y, width, height);
 
-    // Draw outline (adjusted to stay within the dimensions of the box)
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 1;
     ctx.strokeRect(x + ctx.lineWidth / 2, y + ctx.lineWidth / 2, width - ctx.lineWidth, height - ctx.lineWidth);
@@ -302,47 +108,218 @@ function drawBox(ctx, x, y, width, height, shade) {
     ctx.restore();
 }
 
-function generateArrangementText(positions) {
-    let text = '';
-    const binHeight = parseInt(document.getElementById('bin-height').value);
+// Function to trim text to fit within the specified dimension
+function trimTextToFit(ctx, text, maxDimension) {
+    let trimmedText = text;
+    let textWidth = ctx.measureText(trimmedText).width;
 
-    positions.forEach((positionArray, binIndex) => {
-        text += `Bin ${binIndex + 1}:\n`;
-        positionArray.forEach(box => {
-            //origin is top left of bin
-            //text += `  Box [${box.name}]: x=${box.x}, y=${box.height}, width=${box.width}, height=${box.height}\n`;
-            
-            //transposed so (x,y)=(0,0) corresponds to the bottom left of the bin
-            text += `  Box [${box.name}]: x=${box.x}, y=${Math.abs(box.y+box.height-binHeight)}, width=${box.width}, height=${box.height}\n`;
-            
-        });
-        text += '\n';
-    });
-    if (unpackedGames.length > 0) {
-        text += 'Unpacked Games:\n';
-        unpackedGames.forEach(game => {
-            text += `  ${game}\n`;
-        });
+    while (textWidth > maxDimension && trimmedText.length > 0) {
+        trimmedText = trimmedText.slice(0, -1);
+        textWidth = ctx.measureText(trimmedText).width;
     }
-    return text;
+
+    return trimmedText;
 }
 
-function downloadArrangement() {
-    if (globalPackingPositions.length === 0) {
-        alert('No packing arrangement available. Please pack the bins first.');
-        return;
+// Function to draw text inside the box
+function drawText(ctx, text, x, y, width, height, vertical) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    if (vertical) {
+        ctx.translate(width / 2, height / 2);
+        ctx.rotate(-Math.PI / 2);
     }
 
-    const arrangementText = generateArrangementText(globalPackingPositions);
-    const blob = new Blob([arrangementText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
+    ctx.font = "12px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'bin_arrangement.txt';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const maxDimension = vertical ? height : width;
+    const trimmedText = trimTextToFit(ctx, text, maxDimension);
+
+    const textX = vertical ? 0 : width / 2;
+    const textY = vertical ? 0 : height / 2;
+    ctx.fillText(trimmedText, textX, textY);
+
+    ctx.restore();
+}
+
+// Function to attempt placing a box in the bin
+function tryPlaceBox(ctx, positionArray, name, width, height, binWidth, binHeight, vertical, shade, supportThreshold) {
+    for (let y = binHeight - height; y >= 0; y--) {
+        for (let x = 0; x <= binWidth - width; x++) {
+            if (canPlaceBox(x, y, width, height, positionArray) && (measureSupport({ x, y, width, height }, positionArray, binHeight) > supportThreshold)) {
+                positionArray.push({ x, y, width, height, name });
+                if (ctx) {
+                    drawBox(ctx, x, y, width, height, shade);
+                    drawText(ctx, name, x, y, width, height, vertical);
+                }
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// Function to pack boxes into bins
+function packBins() {
+    const supportThreshold = parseInt(document.getElementById('support-threshold').value);
+    const prioritizeVertical = document.getElementById("prioritizeVertical").checked;
+    const showPackingOrder = document.getElementById("showPackingOrder").checked;
+    const boxes = parseBoxes(document.getElementById('boxes').value);
+
+    boxes.sort((a, b) => b.width !== a.width ? b.width - a.width : b.height - a.height);
+
+    const binSections = parseBinSizes(document.getElementById('bin-sections').value); // Parse bin sizes from textarea
+
+    const binsContainer = document.getElementById('bins-container');
+    binsContainer.innerHTML = '';
+
+    const blueShades = [
+        "#B3D9FF", "#A3C7FF", "#93B4FF", "#82A2FF", "#7290FF",
+        "#618DFF", "#508BFF", "#4682B4", "#3C7AFF", "#326EFF",
+        "#295EFF", "#1A4E8D"
+    ];
+
+    const errorMessages = [];
+    globalPackingPositions = [];
+    binSections.forEach((binSection, sectionIndex) => {
+        const { width: binWidth, height: binHeight, numberOfBins, columns: maxColumns } = binSection;
+
+        const sectionDiv = document.createElement('div');
+        sectionDiv.classList.add('bin-section');
+        binsContainer.appendChild(sectionDiv);
+
+        const sectionBins = [];
+        const sectionPositions = Array.from({ length: numberOfBins }, () => []);
+
+        for (let i = 0; i < numberOfBins; i++) {
+            const canvas = createCanvas(binWidth, binHeight);
+            sectionDiv.appendChild(canvas);
+            sectionBins.push(canvas.getContext('2d'));
+        }
+
+        boxes.forEach((box, i) => {
+            let placed = false;
+            const boxName = showPackingOrder ? `${i} ${box.name}` : box.name;
+
+            for (let binIndex = 0; binIndex < sectionBins.length && !placed; binIndex++) {
+                const ctx = sectionBins[binIndex];
+                const positionArray = sectionPositions[binIndex];
+                const shade = blueShades[positionArray.length % blueShades.length];
+
+                if (prioritizeVertical) {
+                    placed = tryPlaceBox(ctx, positionArray, boxName, box.height, box.width, binWidth, binHeight, true, shade, supportThreshold);
+                    if (!placed) {
+                        placed = tryPlaceBox(ctx, positionArray, boxName, box.width, box.height, binWidth, binHeight, false, shade, supportThreshold);
+                    }
+                } else {
+                    placed = tryPlaceBox(ctx, positionArray, boxName, box.width, box.height, binWidth, binHeight, false, shade, supportThreshold);
+                    if (!placed) {
+                        placed = tryPlaceBox(ctx, positionArray, boxName, box.height, box.width, binWidth, binHeight, true, shade, supportThreshold);
+                    }
+                }
+            }
+
+            if (!placed) {
+                errorMessages.push(boxName);
+            }
+        });
+
+        handleErrors(errorMessages);
+
+        arrangeBins(sectionDiv, numberOfBins, binWidth, maxColumns);
+        globalPackingPositions.push({binHeight,binWidth,sectionPositions});
+        unpackedGames.push(...errorMessages);
+
+        errorMessages.length = 0; // Clear error messages for the next section
+    });
+}
+
+// Function to arrange bins in a section
+function arrangeBins(sectionDiv, numberOfBins, binWidth, maxColumns) {
+    const sectionStyle = sectionDiv.style;
+    const columnCount = Math.min(numberOfBins, maxColumns);
+    const rowCount = Math.ceil(numberOfBins / maxColumns);
+    sectionStyle.gridTemplateColumns = `repeat(${columnCount}, ${binWidth}px)`;
+    sectionStyle.gridTemplateRows = `repeat(${rowCount}, auto)`;
+}
+
+// Function to handle error messages
+function handleErrors(errorMessages) {
+    if (errorMessages.length > 0) {
+        const errorSummaryElement = document.getElementById('error-summary');
+        const errorDetailsElement = document.getElementById('error-details');
+
+        errorSummaryElement.style.display = 'block';
+        errorSummaryElement.innerHTML = `<strong>Error:</strong> <button onclick="toggleErrorDetails()">Show items that were not packed</button>`;
+        errorDetailsElement.innerHTML = '';
+        errorMessages.forEach(msg => {
+            const li = document.createElement('li');
+            li.textContent = msg;
+            errorDetailsElement.appendChild(li);
+        });
+
+        document.getElementById('error-message').style.display = 'block';
+    } else {
+        document.getElementById('error-summary').innerHTML = '';
+        document.getElementById('error-summary').style.display = 'none';
+        document.getElementById('error-details').innerHTML = '';
+    }
+}
+
+
+// Function to generate arrangement text
+function generateArrangementText() {
+    let arrangementText = '';
+    globalPackingPositions.forEach((section, sectionIndex) => {
+
+        arrangementText += `Section ${sectionIndex + 1}:\n`;
+
+        let binWidth = section.binWidth;
+        let binHeight = section.binHeight;
+        
+        section.sectionPositions.forEach((bin, binIndex) => {
+            arrangementText += `Bin ${binIndex + 1} (${binWidth}x${binHeight}):\n`;
+
+            bin.forEach(box => {
+                arrangementText += `${box.name}, ${box.width}, ${box.height}\n`;
+            });
+
+            arrangementText += '\n';
+        });
+
+        arrangementText += '\n';
+    });
+
+    if (unpackedGames.length > 0) {
+        arrangementText += 'Unpacked Items:\n';
+        unpackedGames.forEach(game => {
+            arrangementText += `${game}\n`;
+        });
+    }
+
+    return arrangementText;
+}
+
+
+
+// Function to download the arrangement as a text file
+function downloadArrangement() {
+    const arrangementText = generateArrangementText();
+    const blob = new Blob([arrangementText], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'bin_arrangement.txt';
+    link.click();
+}
+
+// Function to toggle error details
+function toggleErrorDetails() {
+    const errorDetailsElement = document.getElementById('error-details');
+    const isVisible = errorDetailsElement.style.display !== 'none';
+    errorDetailsElement.style.display = isVisible ? 'none' : 'block';
 }
 
 

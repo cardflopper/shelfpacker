@@ -9,24 +9,18 @@
 <body onload="packBins()">
     <h1>Shelf Packer</h1>
     <div>
-        <label for="bin-width">Bin Width:</label>
-        <input type="number" id="bin-width" value="333">
-        <label for="bin-height">Bin Height:</label>
-        <input type="number" id="bin-height" value="333">
-    </div>
-    <div>
-        <label for="number-of-bins">Number of Bins:</label>
-        <input type="number" id="number-of-bins" value="16">
-    </div>
-    <div>
-        <label for="max-columns">Max Columns:</label>
-        <input type="number" id="max-columns" value="4">
-    </div>
-    <div>
         <label for="support-threshold">Min % box support:</label>
         <input type="number" id="support-threshold" value="85">
         <a href="javascript:void(0);" title="control how much of the base of the box must be supported to allow it to be packed">[?]</a>
     </div>
+    
+    <div>
+        <label for="bin-sections">Bin Sections:</label><a href="javascript:void(0);" title="one shelf per line: bin_width, bin_height, bin_count, columns">[?]</a>
+        <div><textarea id="bin-sections">
+333,333,16,4
+    </textarea></div>
+</div>
+
     <div>
         <label for="boxes">Boxes (name,width,height per line) or Upload File:</label><br>
         <textarea id="boxes" rows="10" cols="30"></textarea>
@@ -34,7 +28,7 @@
     </div>
     <button onclick="handleFileUpload()">Upload File</button>
     <button onclick="packBins()">Pack Bins</button>
-    <button id="download-button" onclick="downloadArrangement()">Download Arrangement</button>
+        <button id="download-button" onclick="downloadArrangement()">Download Arrangement</button>
     <div>
         <label for="prioritizeVertical">Prioritize Vertical</label>
         <input id="prioritizeVertical" type="checkbox"/>
