@@ -1,5 +1,8 @@
 let globalPackingPositions = [];
-let unpackedGames = [];
+let nextBoxId = 0; // Initialize a counter for assigning unique IDs to boxes
+// Define a global array to keep track of packed box IDs across all sections
+let packedBoxIds = [];
+
 
 // Utility function to create a canvas element
 function createCanvas(binWidth, binHeight) {
@@ -54,7 +57,8 @@ function parseBoxes(input) {
                 return index === 0 ? value : Number(value);
             });
 
-            return { name, width, height };
+            const id = nextBoxId++; // Assign a unique ID to each box
+            return { id, name, width, height };
         });
 }
 
@@ -169,7 +173,11 @@ function packBins() {
     const showPackingOrder = document.getElementById("showPackingOrder").checked;
     const boxes = parseBoxes(document.getElementById('boxes').value);
 
-    boxes.sort((a, b) => b.width !== a.width ? b.width - a.width : b.height - a.height);
+    boxes.sort((a, b) => {
+        
+            return b.width-a.width;
+        
+    });
 
     const binSections = parseBinSizes(document.getElementById('bin-sections').value); // Parse bin sizes from textarea
 
@@ -184,6 +192,7 @@ function packBins() {
 
     const errorMessages = [];
     globalPackingPositions = [];
+
     binSections.forEach((binSection, sectionIndex) => {
         const { width: binWidth, height: binHeight, numberOfBins, columns: maxColumns } = binSection;
 
@@ -201,41 +210,47 @@ function packBins() {
         }
 
         boxes.forEach((box, i) => {
-            let placed = false;
-            const boxName = showPackingOrder ? `${i} ${box.name}` : box.name;
+            const { id, name, width, height } = box;
 
-            for (let binIndex = 0; binIndex < sectionBins.length && !placed; binIndex++) {
-                const ctx = sectionBins[binIndex];
-                const positionArray = sectionPositions[binIndex];
-                const shade = blueShades[positionArray.length % blueShades.length];
+            if (!packedBoxIds.includes(id)) {
+                let placed = false;
+                const boxName = showPackingOrder ? `${i} ${name}` : name;
 
-                if (prioritizeVertical) {
-                    placed = tryPlaceBox(ctx, positionArray, boxName, box.height, box.width, binWidth, binHeight, true, shade, supportThreshold);
-                    if (!placed) {
-                        placed = tryPlaceBox(ctx, positionArray, boxName, box.width, box.height, binWidth, binHeight, false, shade, supportThreshold);
-                    }
-                } else {
-                    placed = tryPlaceBox(ctx, positionArray, boxName, box.width, box.height, binWidth, binHeight, false, shade, supportThreshold);
-                    if (!placed) {
-                        placed = tryPlaceBox(ctx, positionArray, boxName, box.height, box.width, binWidth, binHeight, true, shade, supportThreshold);
+                for (let binIndex = 0; binIndex < sectionBins.length && !placed; binIndex++) {
+                    const ctx = sectionBins[binIndex];
+                    const positionArray = sectionPositions[binIndex];
+                    const shade = blueShades[positionArray.length % blueShades.length];
+
+                    if (prioritizeVertical) {
+                        placed = tryPlaceBox(ctx, positionArray, boxName, height, width, binWidth, binHeight, true, shade, supportThreshold);
+                        if (!placed) {
+                            placed = tryPlaceBox(ctx, positionArray, boxName, width, height, binWidth, binHeight, false, shade, supportThreshold);
+                        }
+                    } else {
+                        placed = tryPlaceBox(ctx, positionArray, boxName, width, height, binWidth, binHeight, false, shade, supportThreshold);
+                        if (!placed) {
+                            placed = tryPlaceBox(ctx, positionArray, boxName, height, width, binWidth, binHeight, true, shade, supportThreshold);
+                        }
                     }
                 }
-            }
 
-            if (!placed) {
-                errorMessages.push(boxName);
+                if (placed) {
+                    packedBoxIds.push(id); // Add the box ID to the global packedBoxIds array
+                } else {
+                    errorMessages.push(boxName); // Add to error messages if box couldn't be placed
+                }
             }
         });
 
         handleErrors(errorMessages);
-
+        
         arrangeBins(sectionDiv, numberOfBins, binWidth, maxColumns);
-        globalPackingPositions.push({binHeight,binWidth,sectionPositions});
-        unpackedGames.push(...errorMessages);
+        globalPackingPositions.push({ binHeight, binWidth, sectionPositions });
 
         errorMessages.length = 0; // Clear error messages for the next section
     });
 }
+
 
 // Function to arrange bins in a section
 function arrangeBins(sectionDiv, numberOfBins, binWidth, maxColumns) {
@@ -293,11 +308,13 @@ function generateArrangementText() {
         arrangementText += '\n';
     });
 
-    if (unpackedGames.length > 0) {
+
+    let errors = document.getElementById('error-details');
+
+    if (errors.children.length > 0) {
         arrangementText += 'Unpacked Items:\n';
-        unpackedGames.forEach(game => {
-            arrangementText += `${game}\n`;
-        });
+        for(let i=0;i<errors.children.length;i++)
+            arrangementText += `${errors.children[i].textContent}\n`;
     }
 
     return arrangementText;

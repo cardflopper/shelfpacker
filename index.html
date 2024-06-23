@@ -9,6 +9,13 @@
 <body onload="packBins()">
     <h1>Shelf Packer</h1>
     <div>
+        <label for="algorithm-type">Algorithm:</label>
+        <select id="algorithm-type">
+            <option value="first-fit">First Fit</option>
+            <option value="best-fit">Best Fit</option>
+        </select>
+    </div>
+    <div>
         <label for="support-threshold">Min % box support:</label>
         <input type="number" id="support-threshold" value="85">
         <a href="javascript:void(0);" title="control how much of the base of the box must be supported to allow it to be packed">[?]</a>
