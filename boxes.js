@@ -9,8 +9,8 @@ North Wind,295,73
 Sanssouci,295, 73
 Meadow,295, 75
 Asara,295, 73
-Orongo,295, 73
 #========Added recently
+Orongo,297, 73
 Aquileia,297,73
 Manila,295,73
 A Castle for All Seasons,297,73
@@ -134,11 +134,4 @@ Cornwall,192,67
 Atlandice,220,53
 Carcassone,192,68
 Carcasson Neues Land,192,68
-Cacao,192,68
-Glory to Rome (black),178,46 
-San Juan (1ed),185,42
-Nations Dice,190,68
-Haleakala,235,55
-Lancelot,219,72 
-Helios,228,73
-`;
+Cacao,192,68`;
