@@ -56,7 +56,6 @@ function parseBoxes(input) {
 
                 return index === 0 ? value : Number(value);
             });
-
             const id = nextBoxId++; // Assign a unique ID to each box
             return { id, name, width, height };
         });
@@ -135,7 +134,7 @@ function drawText(ctx, text, x, y, width, height, vertical) {
         ctx.rotate(-Math.PI / 2);
     }
 
-    ctx.font = "12px Arial";
+    ctx.font = "10px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
@@ -172,30 +171,30 @@ function packBins() {
     const prioritizeVertical = document.getElementById("prioritizeVertical").checked;
     const showPackingOrder = document.getElementById("showPackingOrder").checked;
     const boxes = parseBoxes(document.getElementById('boxes').value);
+    const scale=1;
 
     boxes.sort((a, b) => {
-        
+        if(b.width !== a.width)
             return b.width-a.width;
-        
+        return b.height-a.height;
     });
 
     const binSections = parseBinSizes(document.getElementById('bin-sections').value); // Parse bin sizes from textarea
-
     const binsContainer = document.getElementById('bins-container');
     binsContainer.innerHTML = '';
-
-    const blueShades = [
+    const errorMessages = [];
+    globalPackingPositions = [];
+    
+    //Blue shades
+    const shades = [
         "#B3D9FF", "#A3C7FF", "#93B4FF", "#82A2FF", "#7290FF",
         "#618DFF", "#508BFF", "#4682B4", "#3C7AFF", "#326EFF",
         "#295EFF", "#1A4E8D"
     ];
 
-    const errorMessages = [];
-    globalPackingPositions = [];
-
     binSections.forEach((binSection, sectionIndex) => {
         const { width: binWidth, height: binHeight, numberOfBins, columns: maxColumns } = binSection;
-
+        
         const sectionDiv = document.createElement('div');
         sectionDiv.classList.add('bin-section');
         binsContainer.appendChild(sectionDiv);
@@ -219,7 +218,7 @@ function packBins() {
                 for (let binIndex = 0; binIndex < sectionBins.length && !placed; binIndex++) {
                     const ctx = sectionBins[binIndex];
                     const positionArray = sectionPositions[binIndex];
-                    const shade = blueShades[positionArray.length % blueShades.length];
+                    const shade = shades[positionArray.length % shades.length];
 
                     if (prioritizeVertical) {
                         placed = tryPlaceBox(ctx, positionArray, boxName, height, width, binWidth, binHeight, true, shade, supportThreshold);
@@ -254,12 +253,11 @@ function packBins() {
 
 // Function to arrange bins in a section
 function arrangeBins(sectionDiv, numberOfBins, binWidth, maxColumns) {
-    const sectionStyle = sectionDiv.style;
+ 
     const columnCount = Math.min(numberOfBins, maxColumns);
-    const rowCount = Math.ceil(numberOfBins / maxColumns);
-    sectionStyle.gridTemplateColumns = `repeat(${columnCount}, ${binWidth}px)`;
-    sectionStyle.gridTemplateRows = `repeat(${rowCount}, auto)`;
-}
+    //sectionDiv.style.gridTemplateColumns = `repeat(${columnCount}, ${binWidth}px)`;
+    sectionDiv.style.gridTemplateColumns = `repeat(${columnCount}, 1fr)`;
+}    
 
 // Function to handle error messages
 function handleErrors(errorMessages) {

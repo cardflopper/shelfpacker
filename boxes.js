@@ -32,40 +32,40 @@ Aquarium,154,37
 Blueprints,154,37
 More Cash n' More Guns,140,56
 Team Spirit,140,56
-Colossal Arena (2004 ed),200,40
+Colossal Arena (2004),200,40
 Fangs,130,40
 The Crew: The Quest for Planet Nine,130,40
-CoB: Card Game,112, 36
-Cob: Dice Game,112, 36
+CoB: Card Game,112,36
+CoB: Dice Game,112,36
 Atlas: Enchanted Lands,130,40
 Fungi,130,40
 Fleet,130,40
 Artsee,150,52
 Truffle Shuffle,145,47
-Through the Desert (1st ed),255, 52
+Through the Desert (1st ed),255,52
 Shinobi Wat-Aah!,257,70
-Infiltration,255, 52
+Infiltration,255,52
 Rune Age,255,52
 Bob Ross: The Art of Chill,267,52
 Battle Sheep,265,62
-Discoveries: The Journals of Lewis and Clark,276, 57
-Transamerica,270, 68
-Gravwell (2nd ed),242, 78
-King of New York,255, 70
+Discoveries: The Journals of Lewis and Clark,276,57
+Transamerica,270,68
+Gravwell (2nd ed),242,78
+King of New York,255,70
 Modern Art (cmon ed),255,52
 Kingdoms,255,52
 Red November,255,50
-The LotR (FF ed),255, 52
-Gateway Uprising,255, 52
+The LotR (FF ed),255,52
+Gateway Uprising,255,52
 Zhan Guo,297,73
-Subdivision,297, 73
-A Study In Emerald,297, 73
+Subdivision,297,73
+A Study In Emerald,297,73
 Mombasa,297,73
-Key to the Kingdom,295, 70
-Steam Time,297, 73
-Around the World in 80 Days,297, 73
-Mercado,297, 73
-Biblios,138, 42
+Key to the Kingdom,295,70
+Steam Time,297,73
+Around the World in 80 Days,297,73
+Mercado,297,73
+Biblios,138,42
 Pyramids,138,42
 Fox in Forest,114,32
 Fox in Forest Duet,114,32
@@ -85,9 +85,9 @@ Nightfall,200,82
 Nightfall: The Coldest War,200,82
 Nightfall: Martial Law,200,82
 Starfighter,190,60
-Citadels (old),104,37
-Colossal Arena (new),104,37
-Jaipur (1st ed),104,37
+Citadels (small),104,37
+Colossal Arena (2007),104,37
+Jaipur (1ed),104,37
 TSCHAK!,104,37
 Kill the Overlord,110,42
 Secrets,104,37
@@ -98,8 +98,8 @@ Pocket Mars,100,30
 BANG! Dice: Old Saloon,90,33
 Fairy Tile,206,60
 Pickomino,202,52
-Aton, 192,74
-Arena: Roma II, 192,74
+Aton,192,74
+Arena: Roma II,192,74
 Blokus Duo,207,43
 Jambo,202,32
 Morels,204,32
@@ -126,4 +126,19 @@ Majesty For the Realm,190,65
 World's Fair 1893,210,58
 Floating Market,224,52
 Le Fantom De L'Opera,224,65
-Pandemic Iberia,223,45`;
+Pandemic Iberia,223,45
+DC DBG: Forever Evil,206,80
+DC Deck Building Game,206,80
+DC DBG: Heroes Unite,206,80
+Cornwall,192,67
+Atlandice,220,53
+Carcassone,192,68
+Carcasson Neues Land,192,68
+Cacao,192,68
+Glory to Rome (black),178,46 
+San Juan (1ed),185,42
+Nations Dice,190,68
+Haleakala,235,55
+Lancelot,219,72 
+Helios,228,73
+`;
