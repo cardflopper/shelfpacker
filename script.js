@@ -37,6 +37,10 @@ function parseBinSizes(input) {
 
     const binSizes = lines.map(line => {
         const [width, height, numberOfBins, columns] = line.split(',').map(item => parseInt(item.trim()));
+        if(numberOfBins>25){
+            alert("max bins = 25");
+            throw new Error("validation error: Max Bins");
+        } 
         return { width, height, numberOfBins, columns };
     });
     return binSizes;
@@ -103,7 +107,8 @@ function drawBox(ctx, x, y, width, height, shade) {
     ctx.save();
     ctx.fillStyle = shade;
     ctx.fillRect(x, y, width, height);
-
+    
+    
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 1;
     ctx.strokeRect(x + ctx.lineWidth / 2, y + ctx.lineWidth / 2, width - ctx.lineWidth, height - ctx.lineWidth);
@@ -126,6 +131,7 @@ function trimTextToFit(ctx, text, maxDimension) {
 
 // Function to draw text inside the box
 function drawText(ctx, text, x, y, width, height, vertical) {
+    
     ctx.save();
     ctx.translate(x, y);
 
@@ -134,12 +140,15 @@ function drawText(ctx, text, x, y, width, height, vertical) {
         ctx.rotate(-Math.PI / 2);
     }
 
-    ctx.font = "10px Arial";
-    ctx.textAlign = "center";
+    ctx.font = "15px Arial Narrow";
+    //if(vertical)
+        ctx.textAlign = "center"; 
     ctx.textBaseline = "middle";
 
+    
     const maxDimension = vertical ? height : width;
-    const trimmedText = trimTextToFit(ctx, text, maxDimension);
+    const textPadding = Math.min(15, maxDimension/10);
+    const trimmedText = trimTextToFit(ctx, text, maxDimension -textPadding);
 
     const textX = vertical ? 0 : width / 2;
     const textY = vertical ? 0 : height / 2;
@@ -150,8 +159,8 @@ function drawText(ctx, text, x, y, width, height, vertical) {
 
 // Function to attempt placing a box in the bin
 function tryPlaceBox(ctx, positionArray, name, width, height, binWidth, binHeight, vertical, shade, supportThreshold) {
-    for (let y = binHeight - height; y >= 0; y--) {
-        for (let x = 0; x <= binWidth - width; x++) {
+    for (let y = binHeight - height; y >= 0; y-=1) {
+        for (let x = 0; x <= binWidth - width; x+=1) {
             if (canPlaceBox(x, y, width, height, positionArray) && (measureSupport({ x, y, width, height }, positionArray, binHeight) > supportThreshold)) {
                 positionArray.push({ x, y, width, height, name });
                 if (ctx) {
@@ -171,11 +180,10 @@ function packBins() {
     const prioritizeVertical = document.getElementById("prioritizeVertical").checked;
     const showPackingOrder = document.getElementById("showPackingOrder").checked;
     const boxes = parseBoxes(document.getElementById('boxes').value);
-    const scale=1;
 
     boxes.sort((a, b) => {
         if(b.width !== a.width)
-            return b.width-a.width;
+            return b.width - a.width;
         return b.height-a.height;
     });
 
@@ -255,8 +263,8 @@ function packBins() {
 function arrangeBins(sectionDiv, numberOfBins, binWidth, maxColumns) {
  
     const columnCount = Math.min(numberOfBins, maxColumns);
-    //sectionDiv.style.gridTemplateColumns = `repeat(${columnCount}, ${binWidth}px)`;
-    sectionDiv.style.gridTemplateColumns = `repeat(${columnCount}, 1fr)`;
+    sectionDiv.style.gridTemplateColumns = `repeat(${columnCount}, ${binWidth}px)`;
+    //sectionDiv.style.gridTemplateColumns = `repeat(${columnCount}, 1fr)`;
 }    
 
 // Function to handle error messages
