@@ -1,5 +1,4 @@
-const sampleBoxes =
-`#Title,Width,Height,Item-Type
+#Title,Width,Height,Item-Type
 Bring Out Yer Dead,292,80,boardgame
 Oceanos,302,75,boardgame
 Adventureland,310,68,boardgame
@@ -299,4 +298,4 @@ Marvel Cards #1,32,295,binder
 Marvel Cards #2,32,295,binder
 Marvel Cards #3,32,295,binder
 Marvel Cards #4,32,295,binder
-Marvel Cards #5,32,295,binder`;
+Marvel Cards #5,32,295,binder

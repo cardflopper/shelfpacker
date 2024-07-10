@@ -12,3 +12,11 @@ canvas {
     display :grid;
     box-sizing:border-box;
 }
+
+#button-pack{
+    background-color:lightgreen;
+}
+
+h2{
+    background-color:lightgray;
+}

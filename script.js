@@ -36,12 +36,17 @@ function parseBinSizes(input) {
     const lines = binSizesText.split('\n');
 
     const binSizes = lines.map(line => {
-        const [width, height, numberOfBins, columns] = line.split(',').map(item => parseInt(item.trim()));
+        const [label,width, height, numberOfBins, columns] = line.split(',').map((item,i)=> {
+            if(i)
+                return parseInt(item.trim())
+            else 
+                return item.trim();
+        } );
         if(numberOfBins>25){
             alert("max bins = 25");
-            throw new Error("validation error: Max Bins");
+            throw new Error("validation error: Exceeded Max Bins");
         } 
-        return { width, height, numberOfBins, columns };
+        return { label,width, height, numberOfBins, columns };
     });
     return binSizes;
 }
@@ -54,14 +59,14 @@ function parseBoxes(input) {
             const placeholder = '__COMMA__';
             line = line.replace(/\\,/g, placeholder);
 
-            const [name, width, height] = line.split(',').map((value, index) => {
+            const [name, width, height, itemType] = line.split(',').map((value, index) => {
                 value = value.trim();
                 value = value.replace(new RegExp(placeholder, 'g'), ',');
 
-                return index === 0 ? value : Number(value);
+                return (index === 0 || index === 3) ? value : Number(value);
             });
             const id = nextBoxId++; // Assign a unique ID to each box
-            return { id, name, width, height };
+            return { id, name, width, height, itemType };
         });
 }
 
@@ -158,9 +163,9 @@ function drawText(ctx, text, x, y, width, height, vertical) {
 }
 
 // Function to attempt placing a box in the bin
-function tryPlaceBox(ctx, positionArray, name, width, height, binWidth, binHeight, vertical, shade, supportThreshold) {
-    for (let y = binHeight - height; y >= 0; y-=1) {
-        for (let x = 0; x <= binWidth - width; x+=1) {
+function tryPlaceBox(ctx, positionArray, name, width, height, binWidth, binHeight, vertical,forceToBottom, shade, supportThreshold) {
+    for (let x = 0; x <= binWidth - width; x+=1) {
+        for (let y = binHeight - height; y >= 0; y-=1) {
             if (canPlaceBox(x, y, width, height, positionArray) && (measureSupport({ x, y, width, height }, positionArray, binHeight) > supportThreshold)) {
                 positionArray.push({ x, y, width, height, name });
                 if (ctx) {
@@ -169,6 +174,8 @@ function tryPlaceBox(ctx, positionArray, name, width, height, binWidth, binHeigh
                 }
                 return true;
             }
+            if(forceToBottom) //this item can only place on bottom of bin
+                break;
         }
     }
     return false;
@@ -177,14 +184,18 @@ function tryPlaceBox(ctx, positionArray, name, width, height, binWidth, binHeigh
 // Function to pack boxes into bins
 function packBins() {
     const supportThreshold = parseInt(document.getElementById('support-threshold').value);
-    const prioritizeVertical = document.getElementById("prioritizeVertical").checked;
+    const allowVertical = document.getElementById("allowVertical").checked;
     const showPackingOrder = document.getElementById("showPackingOrder").checked;
     const boxes = parseBoxes(document.getElementById('boxes').value);
 
     boxes.sort((a, b) => {
-        if(b.width !== a.width)
+        if(b.width !== a.width){
             return b.width - a.width;
-        return b.height-a.height;
+        }
+        //else if (b.height !== a.height)
+          return b.height - a.height;
+        // else
+        //   return b.width*b.height - a.width* a.height
     });
 
     const binSections = parseBinSizes(document.getElementById('bin-sections').value); // Parse bin sizes from textarea
@@ -201,15 +212,20 @@ function packBins() {
     ];
 
     binSections.forEach((binSection, sectionIndex) => {
-        const { width: binWidth, height: binHeight, numberOfBins, columns: maxColumns } = binSection;
-        
+        const { label, width: binWidth, height: binHeight, numberOfBins, columns: maxColumns } = binSection;
         const sectionDiv = document.createElement('div');
         sectionDiv.classList.add('bin-section');
+        
+        const sectionLabelH2 = document.createElement('h2');
+        sectionLabelH2.innerText = label;
+        binsContainer.appendChild(sectionLabelH2);
+
         binsContainer.appendChild(sectionDiv);
 
         const sectionBins = [];
         const sectionPositions = Array.from({ length: numberOfBins }, () => []);
 
+        
         for (let i = 0; i < numberOfBins; i++) {
             const canvas = createCanvas(binWidth, binHeight);
             sectionDiv.appendChild(canvas);
@@ -217,7 +233,7 @@ function packBins() {
         }
 
         boxes.forEach((box, i) => {
-            const { id, name, width, height } = box;
+            const { id, name, width, height, itemType} = box;
 
             if (!packedBoxIds.includes(id)) {
                 let placed = false;
@@ -228,16 +244,14 @@ function packBins() {
                     const positionArray = sectionPositions[binIndex];
                     const shade = shades[positionArray.length % shades.length];
 
-                    if (prioritizeVertical) {
-                        placed = tryPlaceBox(ctx, positionArray, boxName, height, width, binWidth, binHeight, true, shade, supportThreshold);
-                        if (!placed) {
-                            placed = tryPlaceBox(ctx, positionArray, boxName, width, height, binWidth, binHeight, false, shade, supportThreshold);
-                        }
-                    } else {
-                        placed = tryPlaceBox(ctx, positionArray, boxName, width, height, binWidth, binHeight, false, shade, supportThreshold);
-                        if (!placed) {
-                            placed = tryPlaceBox(ctx, positionArray, boxName, height, width, binWidth, binHeight, true, shade, supportThreshold);
-                        }
+                    if(itemType == 'binder' || itemType=='book'){
+                        placed = tryPlaceBox(ctx, positionArray, boxName, width,height, binWidth, binHeight, true,true, shade, supportThreshold);
+                    }
+                    else {
+                        placed = tryPlaceBox(ctx, positionArray, boxName, width, height, binWidth, binHeight, false,false, shade, supportThreshold);
+                        if(!placed && allowVertical && (positionArray.length > 0)) //first box pack as Horizontal to avoid ugly packs
+                            tryPlaceBox(ctx, positionArray, boxName, height, width, binWidth, binHeight, true,false, shade, supportThreshold);
+                        
                     }
                 }
 
@@ -252,7 +266,7 @@ function packBins() {
         handleErrors(errorMessages);
         
         arrangeBins(sectionDiv, numberOfBins, binWidth, maxColumns);
-        globalPackingPositions.push({ binHeight, binWidth, sectionPositions });
+        globalPackingPositions.push({ binHeight, binWidth, sectionPositions,label });
 
         errorMessages.length = 0; // Clear error messages for the next section
     });
@@ -274,7 +288,7 @@ function handleErrors(errorMessages) {
         const errorDetailsElement = document.getElementById('error-details');
 
         errorSummaryElement.style.display = 'block';
-        errorSummaryElement.innerHTML = `<strong>Error:</strong> <button onclick="toggleErrorDetails()">Show items that were not packed</button>`;
+        errorSummaryElement.innerHTML = `<strong>Error:</strong> <button onclick="toggleErrorDetails()">Show ` + errorMessages.length +` items that were not packed</button>`;
         errorDetailsElement.innerHTML = '';
         errorMessages.forEach(msg => {
             const li = document.createElement('li');
@@ -294,18 +308,29 @@ function handleErrors(errorMessages) {
 // Function to generate arrangement text
 function generateArrangementText() {
     let arrangementText = '';
-    globalPackingPositions.forEach((section, sectionIndex) => {
+    
+    
+    //info for user
+    arrangementText = "Format:\n";
+    arrangementText += `Section <#>/<count> "<name>":\n`;
+    arrangementText += `    Bin <#>/<count> (<binWidth> x <binHeight>)\n`;
+    arrangementText += `        <box name> (<x>,<y>)....\n\n`;
+    //end info
+    
 
-        arrangementText += `Section ${sectionIndex + 1}:\n`;
+    globalPackingPositions.forEach((section, sectionIndex,sectionArr) => {
+
+        arrangementText += `====================================================\n`;
+        arrangementText += `Section [${sectionIndex + 1}/${sectionArr.length}]: "${section.label}"\n`;
 
         let binWidth = section.binWidth;
         let binHeight = section.binHeight;
         
-        section.sectionPositions.forEach((bin, binIndex) => {
-            arrangementText += `Bin ${binIndex + 1} (${binWidth}x${binHeight}):\n`;
-
+        section.sectionPositions.forEach((bin, binIndex, binArr) => {
+            arrangementText += `    Bin [${binIndex + 1}/${binArr.length}] (${binWidth}x${binHeight}):\n`;
             bin.forEach(box => {
-                arrangementText += `${box.name}, ${box.width}, ${box.height}\n`;
+                arrangementText += `        ${box.name} (${box.x},${binHeight-box.y-box.height})\n`;
+                
             });
 
             arrangementText += '\n';
@@ -318,7 +343,8 @@ function generateArrangementText() {
     let errors = document.getElementById('error-details');
 
     if (errors.children.length > 0) {
-        arrangementText += 'Unpacked Items:\n';
+        arrangementText += `====================================================\n`;
+        arrangementText += `Unpacked Items (${errors.children.length}):\n`;
         for(let i=0;i<errors.children.length;i++)
             arrangementText += `${errors.children[i].textContent}\n`;
     }
@@ -345,11 +371,15 @@ function toggleErrorDetails() {
     errorDetailsElement.style.display = isVisible ? 'none' : 'block';
 }
 
+function updateStatus(msg=false){
+    document.getElementById("status").innerText = msg ? msg: "";
+}
 
 
 
 // Initial packBins() call when the page loads
 window.onload = function() {
+    document.getElementById('bin-sections').value = sampleShelves; //sampleBoxes in boxes.js
     document.getElementById('boxes').value = sampleBoxes; //sampleBoxes in boxes.js
-    packBins();
+    //packBins();
 };
