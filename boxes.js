@@ -21,17 +21,18 @@ Cash n Guns (2ed),276, 58,boardgame
 Inkognito,295,73,boardgame
 Rondo,297,73,boardgame
 Order of the Gilded Compass,213,75,boardgame
-Port Nigra,298,88,boardgame
+#Port Nigra,298,88,boardgame
 Magic Dominaria,297,70,boardgame
 Camel Up,300,73,boardgame
 The Golden City,298,73,boardgame
-Downforce,295,42,boardgame
+Downforce,295,42,boardgame,highlight
 Africana (French),298,73,boardgame
 Cleopatra and the Society of Architects,297,73,boardgame
 Ticket to Ride Europe,297,73,boardgame
 Five Tribes,297,73,boardgame
 Aquarium,154,37,boardgame
 Blueprints,154,37,boardgame
+Traders of Osaka,154,37,boardgame
 More Cash n' More Guns,140,56,boardgame
 Team Spirit,140,56,boardgame
 Colossal Arena (2004),200,40,boardgame
@@ -76,7 +77,6 @@ Ankh'or,130,40,boardgame
 7 Wonders Duel,205,52,boardgame
 Boomtown,200,52,boardgame
 Point Salad,145,48,boardgame
-Laterns: The Harvest Festival,185,52,boardgame
 Tiny Epic Galaxies Blast Off!,120,40,boardgame
 Targi,204,48,boardgame
 Spynet,116,34,boardgame
@@ -157,9 +157,9 @@ Cave Troll,198,68,boardgame
 The Speicherstadt,192,68,boardgame
 Loop Inc, 234,51,boardgame
 Tournay,238,48,boardgame
-Pantheon (German),227,93,boardgame
+#Pantheon (German),227,93,boardgame
 Wizard's Brew,230,65,boardgame
-Stone Age,227,94,,boardgame
+#Stone Age,227,94,,boardgame
 The Wizard Always Wins,204,66,boardgame
 Istanbul,227,73,boardgame
 Troyes,227,73,boardgame
@@ -198,12 +198,12 @@ Wild Space,201,57,boardgame
 Rajas: Dice Charmers,201,47,boardgame
 Kanagawa,206,63,boardgame
 Pandemic: Rapid Response,224,48,boardgame
-Nefertiti,234,54,boardgame
+#Nefertiti,234,54,boardgame
 Olympus,296,71,boardgame
 Black Gold,296,71,boardgame
-Gears of War,296,102,boardgame
+#Gears of War,296,102,boardgame
 Fury of Dracula (FFed),296,74,boardgame
-Ventura,296,102,boardgame
+#Ventura,296,102,boardgame
 Netrunner LCG,296,72,boardgame
 Star Wars LCG,296,72,boardgame
 Constantinopolis,296,72,boardgame
@@ -212,7 +212,7 @@ Zombie Tsunami,207,56,boardgame
 Merchants of Araby,213,57,boardgame
 Rolling Realms,205,55,boardgame
 Power Grid Card Game,203,48,boardgame
-Glasgow,203,48,boardgame
+Glasgow,203,48,boardgame,highlight
 Pandemic: The Cure,225,58,boardgame
 Viva Java (big),223,68,boardgame
 Dark Minions,223,44,boardgame
@@ -231,7 +231,7 @@ Leaders of Euphoria: Choose,161,53,boardgame
 Trieste,151,43,boardgame
 Bohnanza,162,32,boardgame
 How To Rob a Bank,152,53,boardgame
-Money,160,52,boardgame
+Money,158,52,boardgame
 Avalon,151,46,boardgame
 Zoolorette: Dice,133,42,boardgame
 Cat Tower,120,71,boardgame
@@ -242,6 +242,7 @@ DeckScape: Test Time,91,25,boardgame
 DeckScape: Fate of London,91,25,boardgame
 DeckScape: Heist in Venice,91,25,boardgame
 DeckScape: Mystery El Dorado,91,25,boardgame
+DeckScape: Behind the Curtain,91,25,boardgame
 Archaeology,96,20,boardgame
 Oh My Goods!,101,23,boardgame
 Illusion,101,23,boardgame
@@ -267,30 +268,62 @@ Lost Cities Rivals,130,40,boardgame
 Ishtar Gardens,295,75,boardgame
 Castles of Burgundy,220,68,boardgame
 #Catan Junior,270,80,boardgame
-Thanos Rising,280,78,boardgame
+#Thanos Rising,280,78,boardgame
 Arcana (revised),255,53,boardgame
-Terraforming Mars: Ares Exp,202,92,boardgame
+Terraforming Mars: Ares Exp,202,92,boardgame,highlight
 City of Gears,305,80,boardgame
-Nauticus,279,73,boardgame
-Alma Mater,279,73,boardgame
+Nauticus,297,73,boardgame,highlight
+Alma Mater,297,73,boardgame,highlight
 Warband,300,70,boardgame
 Merchants Dark Rd,297,73,boardgame
 Pakal,255,57,boardgame
 Maharani,297,63,boardgame
-Lancaster,297,83,boardgame
+#Lancaster,297,83,boardgame
 Mammut,297,63,boardgame
 Show Manager,297,83,boardgame
 Alhambra,297,63,boardgame
 Fresco Exp, 297,63,boardgame
-Fresco, 297,73,boardgame
+Fresco, 297,82,boardgame,highlight
 World Monuments,297,83,boardgame
-Urbanization,297,83,boardgame
-Queen's Architect,297,83,boardgame
-Kairo,297,83,boardgame
+#Lost Legends,297,83,boardgame
+#Urbanization,297,83,boardgame
+#Queen's Architect,297,83,boardgame
+#Kairo,297,83,boardgame
 Glux,297,63,boardgame
-DND Player's Handbook,20,285,book
-DND Dungeon Master's Guide,20,285,book
-DND Monster Manual,20,285,book
+#Castle Ravenloft,312,120,boardgame
+#Legend of Drizzt,312,120,boardgame
+Dark Crystal,303,73,boardgame
+Lords of Vegas,297,73,boardgame
+Ghost Fightin Treasure Hunters,297,75,boardgame
+Rocketville,268,66,boardgame
+7 Wonders,287,80,boardgame
+Era Expansion, 297,73,boardgame
+#Era, 298,100,boardgame
+Forbidden Sky,295,70,boardgame
+#Clank In Space, 310,94,boardgame
+White Castle,180,63,boardgame
+NightFall: Blood country,100,83,boardgame
+Scrabble Upwords (orange),268,53,boardgame
+Stratego Space Marine,270,52,boardgame
+Trains & Stations,303,55,boardgame,highlight
+Valdora,297,73,boardgame,highlight
+king's gate,200,42,boardgame
+Cthulhu Realms,104,34,boargame
+Wonderland,112,32,boardgame
+#---------------------------
+helios,229,74,boardgame
+Lancelot,220,70,boardgame
+GTRome,177,46,boardgame
+San Juan 1st ed,185,41,boardgame
+Nations Dice,190,66,boardgame
+Haleakala,234,54,boardgame
+#---------------------------
+Yspahan,227,73,boardgame,highlight
+Livingstone,227,73,boardgame,highlight
+the game of 49,245,53,boardgame
+DND 5e Player's Handbook,20,285,book
+DND 5e Dungeon Master's Guide,20,285,book
+DND 5e Monster Manual,20,285,book
 MTG Art #1,40,295,binder
 MTG Art #2,40,295,binder
 MTG Art #3,40,295,binder

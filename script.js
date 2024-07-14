@@ -59,14 +59,14 @@ function parseBoxes(input) {
             const placeholder = '__COMMA__';
             line = line.replace(/\\,/g, placeholder);
 
-            const [name, width, height, itemType] = line.split(',').map((value, index) => {
+            const [name, width, height, itemType,action] = line.split(',').map((value, index) => {
                 value = value.trim();
                 value = value.replace(new RegExp(placeholder, 'g'), ',');
 
-                return (index === 0 || index === 3) ? value : Number(value);
+                return (index === 0 || index === 3 || index === 4) ? value : Number(value);
             });
             const id = nextBoxId++; // Assign a unique ID to each box
-            return { id, name, width, height, itemType };
+            return { id, name, width, height, itemType,action};
         });
 }
 
@@ -206,13 +206,14 @@ function packBins() {
     
     //Blue shades
     const shades = [
-        "#B3D9FF", "#A3C7FF", "#93B4FF", "#82A2FF", "#7290FF",
-        "#618DFF", "#508BFF", "#4682B4", "#3C7AFF", "#326EFF",
-        "#295EFF", "#1A4E8D"
+        "#5657ff", "#5f5fff", "#6868fe", "#6f70fe", "#7878fe",
+        "#807ffe", "#8889ff", "#9090ff", "#9a99ff", "#a1a1ff",
+        "#a9a9ff", "#b2b1ff", "#babaff", "#c2c2ff", "#cbcaff",
+        "#d3d2ff", "#dcdaff", "#e4e3ff"
     ];
 
     binSections.forEach((binSection, sectionIndex) => {
-        const { label, width: binWidth, height: binHeight, numberOfBins, columns: maxColumns } = binSection;
+        const { label, width: binWidth, height: binHeight, numberOfBins, columns: maxColumns,action } = binSection;
         const sectionDiv = document.createElement('div');
         sectionDiv.classList.add('bin-section');
         
@@ -233,7 +234,7 @@ function packBins() {
         }
 
         boxes.forEach((box, i) => {
-            const { id, name, width, height, itemType} = box;
+            const { id, name, width, height, itemType, action} = box;
 
             if (!packedBoxIds.includes(id)) {
                 let placed = false;
@@ -242,7 +243,8 @@ function packBins() {
                 for (let binIndex = 0; binIndex < sectionBins.length && !placed; binIndex++) {
                     const ctx = sectionBins[binIndex];
                     const positionArray = sectionPositions[binIndex];
-                    const shade = shades[positionArray.length % shades.length];
+                    let shade = action == "highlight"? "#FFF000" : shades[positionArray.length % shades.length];
+
 
                     if(itemType == 'binder' || itemType=='book'){
                         placed = tryPlaceBox(ctx, positionArray, boxName, width,height, binWidth, binHeight, true,true, shade, supportThreshold);
