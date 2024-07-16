@@ -252,7 +252,7 @@ function packBins() {
                     else {
                         placed = tryPlaceBox(ctx, positionArray, boxName, width, height, binWidth, binHeight, false,false, shade, supportThreshold);
                         if(!placed && allowVertical && (positionArray.length > 0)) //first box pack as Horizontal to avoid ugly packs
-                            tryPlaceBox(ctx, positionArray, boxName, height, width, binWidth, binHeight, true,false, shade, supportThreshold);
+                            placed = tryPlaceBox(ctx, positionArray, boxName, height, width, binWidth, binHeight, true,false, shade, supportThreshold);
                         
                     }
                 }
